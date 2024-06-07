@@ -12,7 +12,7 @@ document.body.appendChild(renderer.domElement);
 //CAMERA
 const camera = new THREE.PerspectiveCamera(40, (window.innerWidth / window.innerHeight), 0.1, 1000);
 // const camera= new THREE.OrthographicCamera();
-camera.position.z = 120;
+camera.position.z = 150;
 camera.position.y = 0;
 camera.position.x = 0;
 
@@ -74,14 +74,15 @@ const objects = [];
 const spread = 15;
 
 class Object {
-    constructor(x, y, geo) {
-        this.x = x;
-        this.y = y;
+    constructor(geo) {
+        this.x = ((Math.random() * 10) - 5);
+        this.y = Math.random() * 10 - 5;
+        this.z = Math.random() * 10 - 5;
         this.geo = geo;
         this.obj = new THREE.Mesh(geo, this.createMaterial());
         this.obj.position.x = this.x * spread;
         this.obj.position.y = this.y * spread;
-        // console.log(this.obj);
+        this.obj.position.z = this.z * spread;
 
         scene.add(this.obj);
         objects.push(this.obj);
@@ -98,20 +99,21 @@ class Object {
     }
 }
 
-let x = 0;
-let y = 0;
+// let x = 0;
+// let y = 0;
 function addBoxes() {
     const width = Math.random() * 10;
-    if (x > 4) {
-        x = 0;
-        y += 1;
-    } else {
-        x += 1;
-    }
-    new Object(x, y, (new THREE.BoxGeometry(width, width, width)));
+    // if (x > 4) {
+    //     x = 0;
+    //     y += 1;
+    // } else {
+    //     x += 1;
+    // }
+    new Object((new THREE.BoxGeometry(width, width, width)));
+    console.log(objects)
 }
 
-for (let i = 0; i < 20; i += 1) {
+for (let i = 0; i < 200; i += 1) {
     addBoxes();
 }
 
