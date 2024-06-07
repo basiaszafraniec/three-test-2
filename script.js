@@ -24,18 +24,18 @@ scene.background = new THREE.Color(0x882266);
 function resizeRendererToDisplaySize(renderer) {
     const canvas = renderer.domElement;
     const pixelRatio = window.devicePixelRatio;
-    const width  = Math.floor( canvas.clientWidth  * pixelRatio );
-    const height = Math.floor( canvas.clientHeight * pixelRatio );
+    const width = Math.floor(canvas.clientWidth * pixelRatio);
+    const height = Math.floor(canvas.clientHeight * pixelRatio);
     const needResize = canvas.width !== width || canvas.height !== height;
     if (needResize) {
-      renderer.setSize(width, height, false);
+        renderer.setSize(width, height, false);
     }
     return needResize;
-  }
-  resizeRendererToDisplaySize(renderer);
+}
+resizeRendererToDisplaySize(renderer);
 
 //LIGHT
-const ambientLight = new THREE.AmbientLight(0xffffff,0.5);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0x0000ff, 3);
@@ -54,10 +54,8 @@ function addCube(s, pos) {
     let cubeMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
 
     let cube = new THREE.Mesh(cubeGeo, cubeMat);
-    // cube.material.color = 0xff0000;    
     cube.position.set(0, pos, 0);
     scene.add(cube);
-    // console.log(cube);
 }
 
 //ROTATE CUBES
@@ -71,24 +69,74 @@ function rotateAllCubes() {
     });
 }
 
+//ADDING OBJECTS
+const objects = [];
+const spread = 15;
+
+class Object {
+    constructor(x, y, geo) {
+        this.x = x;
+        this.y = y;
+        this.geo = geo;
+        this.obj = new THREE.Mesh(geo, this.createMaterial());
+        this.obj.position.x = this.x * spread;
+        this.obj.position.y = this.y * spread;
+        // console.log(this.obj);
+
+        scene.add(this.obj);
+        objects.push(this.obj);
+    }
+
+    createMaterial() {
+        const material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide })
+        const hue = Math.random();
+        const saturation = 1;
+        const luminance = .5;
+        material.color.setHSL(hue, saturation, luminance);
+
+        return material;
+    }
+}
+
+let x = 0;
+let y = 0;
+function addBoxes() {
+    const width = Math.random() * 10;
+    if (x > 4) {
+        x = 0;
+        y += 1;
+    } else {
+        x += 1;
+    }
+    new Object(x, y, (new THREE.BoxGeometry(width, width, width)));
+}
+
+for (let i = 0; i < 20; i += 1) {
+    addBoxes();
+}
+
 //AMIMATE
 let l = 90;
 function animate() {
     requestAnimationFrame(animate);
-    l += 1;
-    if (l % 100 === 0) {
-        addCube(1, (l / 100) - 2);
-    }
-    if (r >= Math.PI * 2) {
-        r -= Math.PI * 2;
-    }
-    r += 0.01;
 
-    rotateAllCubes();
-    // cube.rotateY(0.01);
-    // // cube.rotateZ(0.01);
-    // cube.rotateX(0.01);
-    //RENDER SCENE
+    function buildTower() {
+        l += 1;
+        if (l % 100 === 0) {
+            addCube(1, (l / 100) - 2);
+        }
+        if (r >= Math.PI * 2) {
+            r -= Math.PI * 2;
+        }
+        r += 0.01;
+
+        rotateAllCubes();
+    }
+    // buildTower();
+
+
+
+
     renderer.render(scene, camera);
 
 }
